@@ -70,7 +70,7 @@ class OneRoomNoTask(MiniWorldEnv):
         )
 
         # self.box = self.place_entity(Box(color='red'))
-        self.place_agent(dir=0)
+        self.place_agent(dir=0, pos=np.array([3., 0., 3.]))
 
     def step(self, action):
         obs, reward, done, info = super().step(action)
