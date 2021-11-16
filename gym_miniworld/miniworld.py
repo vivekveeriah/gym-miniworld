@@ -76,7 +76,8 @@ class Room:
         self,
         outline,
         wall_height=DEFAULT_WALL_HEIGHT,
-        floor_tex='floor_tiles_bw',
+        # floor_tex='floor_tiles_bw',
+        floor_tex='floor_tiles_white', 
         wall_tex='concrete',
         ceil_tex='concrete_tiles',
         no_ceiling=False
