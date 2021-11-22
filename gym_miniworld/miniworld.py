@@ -78,7 +78,8 @@ class Room:
         wall_height=DEFAULT_WALL_HEIGHT,
         # floor_tex='floor_tiles_bw',
         floor_tex='floor_tiles_white', 
-        wall_tex='concrete',
+        # wall_tex='concrete',
+        wall_tex='brick_wall',
         ceil_tex='concrete_tiles',
         no_ceiling=False
     ):

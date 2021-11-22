@@ -74,7 +74,6 @@ class OneRoomNoTask(MiniWorldEnv):
 
     def step(self, action):
         obs, reward, done, info = super().step(action)
-
         # if self.near(self.box):
         #     reward += self._reward()
         #     done = True
@@ -97,7 +96,7 @@ class OneRoomS6NoTask(OneRoomNoTask):
             max_episode_steps=max_episode_steps,
             domain_rand=False,
             params=params,
-            obs_width=160, obs_height=160,
+            obs_width=80, obs_height=80,
             **kwargs
         )
 
