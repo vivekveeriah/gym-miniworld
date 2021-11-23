@@ -291,10 +291,10 @@ class Room:
             # Generate the vertices
             # Vertices are listed in counter-clockwise order
 
-            print(f'!!! s_p0 + min_y * Y_VEC: {s_p0 + min_y * Y_VEC}')
-            print(f'!!! s_p0 + max_y * Y_VEC: {s_p0 + max_y * Y_VEC}')
-            print(f'!!! s_p1 + max_y * Y_VEC: {s_p1 + max_y * Y_VEC}')
-            print(f'!!! s_p1 + min_y * Y_VEC: {s_p1 + min_y * Y_VEC}')
+            # print(f'!!! s_p0 + min_y * Y_VEC: {s_p0 + min_y * Y_VEC}')
+            # print(f'!!! s_p0 + max_y * Y_VEC: {s_p0 + max_y * Y_VEC}')
+            # print(f'!!! s_p1 + max_y * Y_VEC: {s_p1 + max_y * Y_VEC}')
+            # print(f'!!! s_p1 + min_y * Y_VEC: {s_p1 + min_y * Y_VEC}')
 
             self.wall_verts.append(s_p0 + min_y * Y_VEC)
             self.wall_verts.append(s_p0 + max_y * Y_VEC)
@@ -309,11 +309,11 @@ class Room:
 
             # Generate the texture coordinates
 
-            print(f'!!! self.wall_tex: {self.wall_tex}')
-            print(f'!!! seg_start: {seg_start}')
-            print(f'!!! min_y: {min_y}')
-            print(f'!!! seg_end - seg_start: {seg_end - seg_start}')
-            print(f'!!! max_y - min_y: {max_y - min_y}')
+            # print(f'!!! self.wall_tex: {self.wall_tex}')
+            # print(f'!!! seg_start: {seg_start}')
+            # print(f'!!! min_y: {min_y}')
+            # print(f'!!! seg_end - seg_start: {seg_end - seg_start}')
+            # print(f'!!! max_y - min_y: {max_y - min_y}')
 
             texcs = gen_texcs_wall(
                 self.wall_tex,
