@@ -49,9 +49,10 @@ class OneRoomNoTask(MiniWorldEnv):
     placed randomly in one big room.
     """
 
-    def __init__(self, size=10, max_episode_steps=180, **kwargs):
+    def __init__(self, size=10, max_episode_steps=180, simple_env=False, **kwargs):
         assert size >= 2
         self.size = size
+        self._simple_env = simple_env
 
         super().__init__(
             max_episode_steps=max_episode_steps,
@@ -72,8 +73,14 @@ class OneRoomNoTask(MiniWorldEnv):
         # self.box = self.place_entity(Box(color='red'))
         
         possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
-        possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
-        possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+
+        if not self._simple_env:
+            possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
+            possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+
+        else:
+            possible_dir_angles = [0, 45, 90, 135, 180, 225, 270, 315, 360]
+            possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
 
         random_pos_x = np.random.choice(possible_pos)
         random_pos_y = np.random.choice(possible_pos)
@@ -126,6 +133,40 @@ class OneRoomS6NoTaskHighRes(OneRoomNoTask):
             domain_rand=False,
             params=params,
             obs_width=160, obs_height=160,
+            **kwargs
+        )
+
+class OneRoomS6NoTaskSimple(OneRoomNoTask):
+    def __init__(self, max_episode_steps=1000, turn_step=45, forward_step=0.5, **kwargs):
+        # Parameters for larger movement steps, fast stepping
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', forward_step)
+        params.set('turn_step', turn_step)
+
+        super().__init__(
+            size=6,
+            max_episode_steps=max_episode_steps,
+            domain_rand=False,
+            params=params,
+            obs_width=80, obs_height=80,
+            simple_env=True,
+            **kwargs
+        )
+
+class OneRoomS6NoTaskSimpleHighRes(OneRoomNoTask):
+    def __init__(self, max_episode_steps=1000, turn_step=45, forward_step=0.5, **kwargs):
+        # Parameters for larger movement steps, fast stepping
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', forward_step)
+        params.set('turn_step', turn_step)
+
+        super().__init__(
+            size=6,
+            max_episode_steps=max_episode_steps,
+            domain_rand=False,
+            params=params,
+            obs_width=160, obs_height=160,
+            simple_env=True,
             **kwargs
         )
 
