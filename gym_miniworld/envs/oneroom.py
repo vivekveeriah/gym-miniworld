@@ -70,7 +70,20 @@ class OneRoomNoTask(MiniWorldEnv):
         )
 
         # self.box = self.place_entity(Box(color='red'))
-        self.place_agent(dir=0, pos=np.array([3., 0., 3.]))
+        
+        possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+        possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
+        possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+
+        random_pos_x = np.random.choice(possible_pos)
+        random_pos_y = np.random.choice(possible_pos)
+        random_pos = [random_pos_x, 0., random_pos_y]
+
+        random_dir = np.random.choice(possible_dir_radians)
+
+        self.place_agent(
+            dir=random_dir, pos=np.array(random_pos)
+        )
 
     def step(self, action):
         obs, reward, done, info = super().step(action)
