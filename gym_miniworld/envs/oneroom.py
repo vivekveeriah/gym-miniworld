@@ -73,6 +73,7 @@ class OneRoomNoTask(MiniWorldEnv):
         # self.box = self.place_entity(Box(color='red'))
         
         possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+        # possible_pos = [0.5, 5.5]
 
         if not self._simple_env:
             possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
@@ -105,7 +106,7 @@ class OneRoomS6(OneRoom):
         super().__init__(size=6, max_episode_steps=max_episode_steps, **kwargs)
 
 class OneRoomS6NoTask(OneRoomNoTask):
-    def __init__(self, max_episode_steps=1000, turn_step=30, forward_step=0.5, **kwargs):
+    def __init__(self, max_episode_steps=200, turn_step=30, forward_step=1., **kwargs):
         # Parameters for larger movement steps, fast stepping
         params = DEFAULT_PARAMS.no_random()
         params.set('forward_step', forward_step)
@@ -121,7 +122,7 @@ class OneRoomS6NoTask(OneRoomNoTask):
         )
 
 class OneRoomS6NoTaskHighRes(OneRoomNoTask):
-    def __init__(self, max_episode_steps=1000, turn_step=30, forward_step=0.5, **kwargs):
+    def __init__(self, max_episode_steps=200, turn_step=30, forward_step=1., **kwargs):
         # Parameters for larger movement steps, fast stepping
         params = DEFAULT_PARAMS.no_random()
         params.set('forward_step', forward_step)
@@ -137,7 +138,7 @@ class OneRoomS6NoTaskHighRes(OneRoomNoTask):
         )
 
 class OneRoomS6NoTaskSimple(OneRoomNoTask):
-    def __init__(self, max_episode_steps=1000, turn_step=45, forward_step=0.5, **kwargs):
+    def __init__(self, max_episode_steps=200, turn_step=45, forward_step=1., **kwargs):
         # Parameters for larger movement steps, fast stepping
         params = DEFAULT_PARAMS.no_random()
         params.set('forward_step', forward_step)
@@ -154,7 +155,7 @@ class OneRoomS6NoTaskSimple(OneRoomNoTask):
         )
 
 class OneRoomS6NoTaskSimpleHighRes(OneRoomNoTask):
-    def __init__(self, max_episode_steps=1000, turn_step=45, forward_step=0.5, **kwargs):
+    def __init__(self, max_episode_steps=200, turn_step=45, forward_step=1., **kwargs):
         # Parameters for larger movement steps, fast stepping
         params = DEFAULT_PARAMS.no_random()
         params.set('forward_step', forward_step)
@@ -171,7 +172,7 @@ class OneRoomS6NoTaskSimpleHighRes(OneRoomNoTask):
         )
 
 class OneRoomS6Fast(OneRoomS6):
-    def __init__(self, forward_step=0.7, turn_step=45):
+    def __init__(self, forward_step=1., turn_step=45):
         # Parameters for larger movement steps, fast stepping
         params = DEFAULT_PARAMS.no_random()
         params.set('forward_step', forward_step)
