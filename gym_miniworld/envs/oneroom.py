@@ -411,7 +411,7 @@ class OneMidSizeRoomWithObstacleNoTask(MiniWorldEnv):
         )
 
         self.box = self.place_entity(
-            Box(color='red'), pos=np.array([4., 0., 4.]), dir=0)
+            Box(color='red', size=0.4), pos=np.array([4., 0., 4.]), dir=0)
         
         random_pos = np.array([4., 0., 4.])        
 
