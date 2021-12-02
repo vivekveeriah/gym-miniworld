@@ -49,10 +49,34 @@ class OneRoomNoTask(MiniWorldEnv):
     placed randomly in one big room.
     """
 
-    def __init__(self, size=10, max_episode_steps=180, simple_env=False, **kwargs):
-        assert size == 6
+    def __init__(self, size=10, max_episode_steps=180, simple_env=False, place_box=False, randomize_start_pos=True, **kwargs):
+        assert size % 2 == 0
+
         self.size = size
-        self._simple_env = simple_env
+        self.simple_env = simple_env
+        self.place_box = place_box
+        self.randomize_start_pos = randomize_start_pos
+
+        # Create variables that are going to be used later on
+        self.possible_start_pos = [0.5 * i for i in range(1, self.size * 2)]
+
+        if self.simple_env:
+            self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
+        else:
+            self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 45)]
+        
+        self.box_pos = np.array(
+            [self.size // 2, 0, self.size // 2]
+        )
+        if not self.place_box:
+            self.agent_pos = np.array(
+                [self.size // 2, 0, self.size // 2]
+            )
+        else:
+            self.agent_pos = np.array(
+                [self.size // 2 + 1, 0, self.size // 2 + 1]
+            )
+
 
         super().__init__(
             max_episode_steps=max_episode_steps,
@@ -61,7 +85,7 @@ class OneRoomNoTask(MiniWorldEnv):
 
         # Allow only movement actions (left/right/forward)
         self.action_space = spaces.Discrete(self.actions.move_forward+1)
-
+        
     def _gen_world(self):
         room = self.add_rect_room(
             min_x=0,
@@ -70,27 +94,34 @@ class OneRoomNoTask(MiniWorldEnv):
             max_z=self.size
         )
 
+        if self.place_box:
+            self.box = self.place_entity(
+                Box(color='red'), pos=self.box_pos, dir=0
+            )
+
         # self.box = self.place_entity(Box(color='red'))
-        
-        possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
-        # possible_pos = [0.5, 5.5]
+        if self.randomize_start_pos:
+            while True:
+                random_pos_x = np.random.choice(self.possible_start_pos)
+                random_pos_y = np.random.choice(self.possible_start_pos)
+                random_dir = np.random.choice(self.possible_dir_radians)
 
-        if not self._simple_env:
-            possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
-            possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+                random_start_pos = np.array(
+                    [random_pos_x, 0., random_pos_y]
+                )
 
+                if self.place_box: 
+                    if not np.array_equal(random_start_pos, self.box_pos):
+                        break
+                else:
+                    break
+                
         else:
-            possible_dir_angles = [0, 45, 90, 135, 180, 225, 270, 315, 360]
-            possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
-
-        random_pos_x = np.random.choice(possible_pos)
-        random_pos_y = np.random.choice(possible_pos)
-        random_pos = [random_pos_x, 0., random_pos_y]
-
-        random_dir = np.random.choice(possible_dir_radians)
+            random_start_pos = self.agent_pos
+            random_dir = 0
 
         self.place_agent(
-            dir=random_dir, pos=np.array(random_pos)
+            dir=random_dir, pos=random_start_pos
         )
 
     def step(self, action):
@@ -98,10 +129,6 @@ class OneRoomNoTask(MiniWorldEnv):
 
         if action == 2:  # if move forward, then move forward twice
             obs, reward, done, info = super().step(action)
-
-        # if self.near(self.box):
-        #     reward += self._reward()
-        #     done = True
 
         return obs, reward, done, info
 
@@ -141,343 +168,326 @@ class OneRoomS6NoTaskHighRes(OneRoomNoTask):
             **kwargs
         )
 
-class OneRoomS6NoTaskSimple(OneRoomNoTask):
-    def __init__(self, max_episode_steps=200, turn_step=45, forward_step=0.5, **kwargs):
-        # Parameters for larger movement steps, fast stepping
-        params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', forward_step)
-        params.set('turn_step', turn_step)
+# class OneRoomS6NoTaskSimpleHighRes(OneRoomNoTask):
+#     def __init__(self, max_episode_steps=200, turn_step=45, forward_step=0.5, **kwargs):
+#         # Parameters for larger movement steps, fast stepping
+#         params = DEFAULT_PARAMS.no_random()
+#         params.set('forward_step', forward_step)
+#         params.set('turn_step', turn_step)
 
-        super().__init__(
-            size=6,
-            max_episode_steps=max_episode_steps,
-            domain_rand=False,
-            params=params,
-            obs_width=80, obs_height=80,
-            simple_env=True,
-            **kwargs
-        )
+#         super().__init__(
+#             size=6,
+#             max_episode_steps=max_episode_steps,
+#             domain_rand=False,
+#             params=params,
+#             obs_width=160, obs_height=160,
+#             simple_env=True,
+#             **kwargs
+#         )
 
-class OneRoomS6NoTaskSimpleHighRes(OneRoomNoTask):
-    def __init__(self, max_episode_steps=200, turn_step=45, forward_step=0.5, **kwargs):
-        # Parameters for larger movement steps, fast stepping
-        params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', forward_step)
-        params.set('turn_step', turn_step)
+# class OneRoomS6Fast(OneRoomS6):
+#     def __init__(self, forward_step=0.5, turn_step=45):
+#         # Parameters for larger movement steps, fast stepping
+#         params = DEFAULT_PARAMS.no_random()
+#         params.set('forward_step', forward_step)
+#         params.set('turn_step', turn_step)
 
-        super().__init__(
-            size=6,
-            max_episode_steps=max_episode_steps,
-            domain_rand=False,
-            params=params,
-            obs_width=160, obs_height=160,
-            simple_env=True,
-            **kwargs
-        )
+#         super().__init__(
+#             max_episode_steps=50,
+#             params=params,
+#             domain_rand=False
+#         )
 
-class OneRoomS6Fast(OneRoomS6):
-    def __init__(self, forward_step=0.5, turn_step=45):
-        # Parameters for larger movement steps, fast stepping
-        params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', forward_step)
-        params.set('turn_step', turn_step)
+# class OneLargeRoomNoTask(MiniWorldEnv):
+#     """
+#     Environment in which the goal is to go to a red box
+#     placed randomly in one big room.
+#     """
 
-        super().__init__(
-            max_episode_steps=50,
-            params=params,
-            domain_rand=False
-        )
+#     def __init__(self, size=10, max_episode_steps=180, simple_env=False, **kwargs):
+#         assert size == 10
+#         self.size = size
+#         self._simple_env = simple_env
 
-class OneLargeRoomNoTask(MiniWorldEnv):
-    """
-    Environment in which the goal is to go to a red box
-    placed randomly in one big room.
-    """
+#         super().__init__(
+#             max_episode_steps=max_episode_steps,
+#             **kwargs
+#         )
 
-    def __init__(self, size=10, max_episode_steps=180, simple_env=False, **kwargs):
-        assert size == 10
-        self.size = size
-        self._simple_env = simple_env
+#         # Allow only movement actions (left/right/forward)
+#         self.action_space = spaces.Discrete(self.actions.move_forward+1)
 
-        super().__init__(
-            max_episode_steps=max_episode_steps,
-            **kwargs
-        )
+#     def _gen_world(self):
+#         room = self.add_rect_room(
+#             min_x=0,
+#             max_x=self.size,
+#             min_z=0,
+#             max_z=self.size
+#         )
 
-        # Allow only movement actions (left/right/forward)
-        self.action_space = spaces.Discrete(self.actions.move_forward+1)
-
-    def _gen_world(self):
-        room = self.add_rect_room(
-            min_x=0,
-            max_x=self.size,
-            min_z=0,
-            max_z=self.size
-        )
-
-        # self.box = self.place_entity(Box(color='red'))
+#         # self.box = self.place_entity(Box(color='red'))
         
-        # possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
-        # possible_pos = [0.5, 5.5]
+#         # possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+#         # possible_pos = [0.5, 5.5]
 
-        possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
+#         possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
 
-        if not self._simple_env:
-            possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
-            possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+#         if not self._simple_env:
+#             possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
+#             possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
 
-        else:
-            possible_dir_angles = [0, 45, 90, 135, 180, 225, 270, 315, 360]
-            possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+#         else:
+#             possible_dir_angles = [0, 45, 90, 135, 180, 225, 270, 315, 360]
+#             possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
 
-        random_pos_x = np.random.choice(possible_pos)
-        random_pos_y = np.random.choice(possible_pos)
-        random_pos = [random_pos_x, 0., random_pos_y]
+#         random_pos_x = np.random.choice(possible_pos)
+#         random_pos_y = np.random.choice(possible_pos)
+#         random_pos = [random_pos_x, 0., random_pos_y]
 
-        random_dir = np.random.choice(possible_dir_radians)
+#         random_dir = np.random.choice(possible_dir_radians)
 
-        self.place_agent(
-            dir=random_dir, pos=np.array(random_pos)
-        )
+#         self.place_agent(
+#             dir=random_dir, pos=np.array(random_pos)
+#         )
 
-    def step(self, action):
-        obs, reward, done, info = super().step(action)
+#     def step(self, action):
+#         obs, reward, done, info = super().step(action)
 
-        if action == 2:  # if move forward, then move forward twice
-            obs, reward, done, info = super().step(action)
+#         if action == 2:  # if move forward, then move forward twice
+#             obs, reward, done, info = super().step(action)
             
-        # if self.near(self.box):
-        #     reward += self._reward()
-        #     done = True
+#         # if self.near(self.box):
+#         #     reward += self._reward()
+#         #     done = True
 
-        return obs, reward, done, info
+#         return obs, reward, done, info
 
-class OneLargeRoomS6NoTask(OneLargeRoomNoTask):
-    def __init__(self, max_episode_steps=500, turn_step=30, forward_step=0.5, **kwargs):
-        # Parameters for larger movement steps, fast stepping
-        params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', forward_step)
-        params.set('turn_step', turn_step)
+# class OneLargeRoomS6NoTask(OneLargeRoomNoTask):
+#     def __init__(self, max_episode_steps=500, turn_step=30, forward_step=0.5, **kwargs):
+#         # Parameters for larger movement steps, fast stepping
+#         params = DEFAULT_PARAMS.no_random()
+#         params.set('forward_step', forward_step)
+#         params.set('turn_step', turn_step)
 
-        super().__init__(
-            size=10,
-            max_episode_steps=max_episode_steps,
-            domain_rand=False,
-            params=params,
-            obs_width=80, obs_height=80,
-            **kwargs
-        )
+#         super().__init__(
+#             size=10,
+#             max_episode_steps=max_episode_steps,
+#             domain_rand=False,
+#             params=params,
+#             obs_width=80, obs_height=80,
+#             **kwargs
+#         )
 
-class OneLargeRoomS6NoTaskHighRes(OneLargeRoomNoTask):
-    def __init__(self, max_episode_steps=500, turn_step=30, forward_step=0.5, **kwargs):
-        # Parameters for larger movement steps, fast stepping
-        params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', forward_step)
-        params.set('turn_step', turn_step)
+# class OneLargeRoomS6NoTaskHighRes(OneLargeRoomNoTask):
+#     def __init__(self, max_episode_steps=500, turn_step=30, forward_step=0.5, **kwargs):
+#         # Parameters for larger movement steps, fast stepping
+#         params = DEFAULT_PARAMS.no_random()
+#         params.set('forward_step', forward_step)
+#         params.set('turn_step', turn_step)
 
-        super().__init__(
-            size=10,
-            max_episode_steps=max_episode_steps,
-            domain_rand=False,
-            params=params,
-            obs_width=160, obs_height=160,
-            **kwargs
-        )
+#         super().__init__(
+#             size=10,
+#             max_episode_steps=max_episode_steps,
+#             domain_rand=False,
+#             params=params,
+#             obs_width=160, obs_height=160,
+#             **kwargs
+#         )
 
-class OneRoomWithObstacleNoTask(MiniWorldEnv):
-    """
-    Environment in which the goal is to go to a red box
-    placed randomly in one big room.
-    """
+# class OneRoomWithObstacleNoTask(MiniWorldEnv):
+#     """
+#     Environment in which the goal is to go to a red box
+#     placed randomly in one big room.
+#     """
 
-    def __init__(self, size=10, max_episode_steps=180, simple_env=False, **kwargs):
-        assert size == 6
-        self.size = size
-        self._simple_env = simple_env
+#     def __init__(self, size=10, max_episode_steps=180, simple_env=False, **kwargs):
+#         assert size == 6
+#         self.size = size
+#         self._simple_env = simple_env
 
-        super().__init__(
-            max_episode_steps=max_episode_steps,
-            **kwargs
-        )
+#         super().__init__(
+#             max_episode_steps=max_episode_steps,
+#             **kwargs
+#         )
 
-        # Allow only movement actions (left/right/forward)
-        self.action_space = spaces.Discrete(self.actions.move_forward+1)
+#         # Allow only movement actions (left/right/forward)
+#         self.action_space = spaces.Discrete(self.actions.move_forward+1)
 
-    def _gen_world(self):
-        room = self.add_rect_room(
-            min_x=0,
-            max_x=self.size,
-            min_z=0,
-            max_z=self.size
-        )
+#     def _gen_world(self):
+#         room = self.add_rect_room(
+#             min_x=0,
+#             max_x=self.size,
+#             min_z=0,
+#             max_z=self.size
+#         )
 
-        self.box = self.place_entity(
-            Box(color='red'), pos=np.array([3., 0., 3.]), dir=0)
+#         self.box = self.place_entity(
+#             Box(color='red'), pos=np.array([3., 0., 3.]), dir=0)
         
-        random_pos = np.array([3., 0., 3.])        
+#         random_pos = np.array([3., 0., 3.])        
 
-        while np.array_equal(random_pos, np.array([3., 0., 3.])):
+#         while np.array_equal(random_pos, np.array([3., 0., 3.])):
 
-            possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
-            # possible_pos = [0.5, 5.5]
+#             possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+#             # possible_pos = [0.5, 5.5]
 
-            if not self._simple_env:
-                possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
-                possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+#             if not self._simple_env:
+#                 possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
+#                 possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
 
-            else:
-                possible_dir_angles = [0, 45, 90, 135, 180, 225, 270, 315, 360]
-                possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+#             else:
+#                 possible_dir_angles = [0, 45, 90, 135, 180, 225, 270, 315, 360]
+#                 possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
 
-            random_pos_x = np.random.choice(possible_pos)
-            random_pos_y = np.random.choice(possible_pos)
-            random_pos = [random_pos_x, 0., random_pos_y]
+#             random_pos_x = np.random.choice(possible_pos)
+#             random_pos_y = np.random.choice(possible_pos)
+#             random_pos = [random_pos_x, 0., random_pos_y]
 
-            random_dir = np.random.choice(possible_dir_radians)
+#             random_dir = np.random.choice(possible_dir_radians)
 
-        self.place_agent(
-            dir=random_dir, pos=np.array(random_pos)
-        )
+#         self.place_agent(
+#             dir=random_dir, pos=np.array(random_pos)
+#         )
 
-    def step(self, action):
-        obs, reward, done, info = super().step(action)
+#     def step(self, action):
+#         obs, reward, done, info = super().step(action)
 
-        if action == 2:  # if move forward, then move forward twice
-            obs, reward, done, info = super().step(action)
+#         if action == 2:  # if move forward, then move forward twice
+#             obs, reward, done, info = super().step(action)
 
-        # if self.near(self.box):
-        #     reward += self._reward()
-        #     done = True
+#         # if self.near(self.box):
+#         #     reward += self._reward()
+#         #     done = True
 
-        return obs, reward, done, info
+#         return obs, reward, done, info
 
-class OneRoomWithObstacleS6NoTask(OneRoomWithObstacleNoTask):
-    def __init__(self, max_episode_steps=200, turn_step=30, forward_step=0.5, **kwargs):
-        # Parameters for larger movement steps, fast stepping
-        params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', forward_step)
-        params.set('turn_step', turn_step)
+# class OneRoomWithObstacleS6NoTask(OneRoomWithObstacleNoTask):
+#     def __init__(self, max_episode_steps=200, turn_step=30, forward_step=0.5, **kwargs):
+#         # Parameters for larger movement steps, fast stepping
+#         params = DEFAULT_PARAMS.no_random()
+#         params.set('forward_step', forward_step)
+#         params.set('turn_step', turn_step)
 
-        super().__init__(
-            size=6,
-            max_episode_steps=max_episode_steps,
-            domain_rand=False,
-            params=params,
-            obs_width=80, obs_height=80,
-            **kwargs
-        )
+#         super().__init__(
+#             size=6,
+#             max_episode_steps=max_episode_steps,
+#             domain_rand=False,
+#             params=params,
+#             obs_width=80, obs_height=80,
+#             **kwargs
+#         )
 
-class OneRoomWithObstacleS6NoTaskHighRes(OneRoomWithObstacleNoTask):
-    def __init__(self, max_episode_steps=200, turn_step=30, forward_step=0.5, **kwargs):
-        # Parameters for larger movement steps, fast stepping
-        params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', forward_step)
-        params.set('turn_step', turn_step)
+# class OneRoomWithObstacleS6NoTaskHighRes(OneRoomWithObstacleNoTask):
+#     def __init__(self, max_episode_steps=200, turn_step=30, forward_step=0.5, **kwargs):
+#         # Parameters for larger movement steps, fast stepping
+#         params = DEFAULT_PARAMS.no_random()
+#         params.set('forward_step', forward_step)
+#         params.set('turn_step', turn_step)
 
-        super().__init__(
-            size=6,
-            max_episode_steps=max_episode_steps,
-            domain_rand=False,
-            params=params,
-            obs_width=160, obs_height=160,
-            **kwargs
-        )
+#         super().__init__(
+#             size=6,
+#             max_episode_steps=max_episode_steps,
+#             domain_rand=False,
+#             params=params,
+#             obs_width=160, obs_height=160,
+#             **kwargs
+#         )
 
-class OneMidSizeRoomWithObstacleNoTask(MiniWorldEnv):
-    """
-    Environment in which the goal is to go to a red box
-    placed randomly in one big room.
-    """
+# class OneMidSizeRoomWithObstacleNoTask(MiniWorldEnv):
+#     """
+#     Environment in which the goal is to go to a red box
+#     placed randomly in one big room.
+#     """
 
-    def __init__(self, size=10, max_episode_steps=180, simple_env=False, **kwargs):
-        assert size == 8
-        self.size = size
-        self._simple_env = simple_env
+#     def __init__(self, size=10, max_episode_steps=180, simple_env=False, **kwargs):
+#         assert size == 8
+#         self.size = size
+#         self._simple_env = simple_env
 
-        super().__init__(
-            max_episode_steps=max_episode_steps,
-            **kwargs
-        )
+#         super().__init__(
+#             max_episode_steps=max_episode_steps,
+#             **kwargs
+#         )
 
-        # Allow only movement actions (left/right/forward)
-        self.action_space = spaces.Discrete(self.actions.move_forward+1)
+#         # Allow only movement actions (left/right/forward)
+#         self.action_space = spaces.Discrete(self.actions.move_forward+1)
 
-    def _gen_world(self):
-        room = self.add_rect_room(
-            min_x=0,
-            max_x=self.size,
-            min_z=0,
-            max_z=self.size
-        )
+#     def _gen_world(self):
+#         room = self.add_rect_room(
+#             min_x=0,
+#             max_x=self.size,
+#             min_z=0,
+#             max_z=self.size
+#         )
 
-        self.box = self.place_entity(
-            Box(color='red', size=0.4), pos=np.array([4., 0., 4.]), dir=0)
+#         self.box = self.place_entity(
+#             Box(color='red', size=0.4), pos=np.array([4., 0., 4.]), dir=0)
         
-        random_pos = np.array([4., 0., 4.])        
+#         random_pos = np.array([4., 0., 4.])        
 
-        while np.array_equal(random_pos, np.array([4., 0., 4.])):
+#         while np.array_equal(random_pos, np.array([4., 0., 4.])):
 
-            possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5]
-            # possible_pos = [0.5, 5.5]
+#             possible_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5]
+#             # possible_pos = [0.5, 5.5]
 
-            if not self._simple_env:
-                possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
-                possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+#             if not self._simple_env:
+#                 possible_dir_angles = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360]
+#                 possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
 
-            else:
-                possible_dir_angles = [0, 45, 90, 135, 180, 225, 270, 315, 360]
-                possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
+#             else:
+#                 possible_dir_angles = [0, 45, 90, 135, 180, 225, 270, 315, 360]
+#                 possible_dir_radians = [i * math.pi / 180 for i in possible_dir_angles]
 
-            random_pos_x = np.random.choice(possible_pos)
-            random_pos_y = np.random.choice(possible_pos)
-            random_pos = [random_pos_x, 0., random_pos_y]
+#             random_pos_x = np.random.choice(possible_pos)
+#             random_pos_y = np.random.choice(possible_pos)
+#             random_pos = [random_pos_x, 0., random_pos_y]
 
-            random_dir = np.random.choice(possible_dir_radians)
+#             random_dir = np.random.choice(possible_dir_radians)
 
-        self.place_agent(
-            dir=random_dir, pos=np.array(random_pos)
-        )
+#         self.place_agent(
+#             dir=random_dir, pos=np.array(random_pos)
+#         )
 
-    def step(self, action):
-        obs, reward, done, info = super().step(action)
+#     def step(self, action):
+#         obs, reward, done, info = super().step(action)
 
-        if action == 2:  # if move forward, then move forward twice
-            obs, reward, done, info = super().step(action)
+#         if action == 2:  # if move forward, then move forward twice
+#             obs, reward, done, info = super().step(action)
 
-        # if self.near(self.box):
-        #     reward += self._reward()
-        #     done = True
+#         # if self.near(self.box):
+#         #     reward += self._reward()
+#         #     done = True
 
-        return obs, reward, done, info
+#         return obs, reward, done, info
 
-class OneMidSizeRoomWithObstacleS6NoTask(OneMidSizeRoomWithObstacleNoTask):
-    def __init__(self, max_episode_steps=400, turn_step=30, forward_step=0.5, **kwargs):
-        # Parameters for larger movement steps, fast stepping
-        params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', forward_step)
-        params.set('turn_step', turn_step)
+# class OneMidSizeRoomWithObstacleS6NoTask(OneMidSizeRoomWithObstacleNoTask):
+#     def __init__(self, max_episode_steps=400, turn_step=30, forward_step=0.5, **kwargs):
+#         # Parameters for larger movement steps, fast stepping
+#         params = DEFAULT_PARAMS.no_random()
+#         params.set('forward_step', forward_step)
+#         params.set('turn_step', turn_step)
 
-        super().__init__(
-            size=8,
-            max_episode_steps=max_episode_steps,
-            domain_rand=False,
-            params=params,
-            obs_width=80, obs_height=80,
-            **kwargs
-        )
+#         super().__init__(
+#             size=8,
+#             max_episode_steps=max_episode_steps,
+#             domain_rand=False,
+#             params=params,
+#             obs_width=80, obs_height=80,
+#             **kwargs
+#         )
 
-class OneMidSizeRoomWithObstacleS6NoTaskHighRes(OneMidSizeRoomWithObstacleNoTask):
-    def __init__(self, max_episode_steps=400, turn_step=30, forward_step=0.5, **kwargs):
-        # Parameters for larger movement steps, fast stepping
-        params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', forward_step)
-        params.set('turn_step', turn_step)
+# class OneMidSizeRoomWithObstacleS6NoTaskHighRes(OneMidSizeRoomWithObstacleNoTask):
+#     def __init__(self, max_episode_steps=400, turn_step=30, forward_step=0.5, **kwargs):
+#         # Parameters for larger movement steps, fast stepping
+#         params = DEFAULT_PARAMS.no_random()
+#         params.set('forward_step', forward_step)
+#         params.set('turn_step', turn_step)
 
-        super().__init__(
-            size=8,
-            max_episode_steps=max_episode_steps,
-            domain_rand=False,
-            params=params,
-            obs_width=160, obs_height=160,
-            **kwargs
-        )
+#         super().__init__(
+#             size=8,
+#             max_episode_steps=max_episode_steps,
+#             domain_rand=False,
+#             params=params,
+#             obs_width=160, obs_height=160,
+#             **kwargs
+#         )
