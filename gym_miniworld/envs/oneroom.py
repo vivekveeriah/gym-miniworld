@@ -49,13 +49,14 @@ class OneRoomNoTask(MiniWorldEnv):
     placed randomly in one big room.
     """
 
-    def __init__(self, size=10, max_episode_steps=180, simple_env=False, place_box=False, randomize_start_pos=True, **kwargs):
+    def __init__(self, size=10, max_episode_steps=180, simple_env=False, place_box=False, randomize_start_pos=True, box_size=0.8, **kwargs):
         assert size % 2 == 0
 
         self.size = size
         self.simple_env = simple_env
         self.place_box = place_box
         self.randomize_start_pos = randomize_start_pos
+        self.box_size = box_size
 
         # Create variables that are going to be used later on
         self.possible_start_pos = [0.5 * i for i in range(1, self.size * 2)]
@@ -96,7 +97,7 @@ class OneRoomNoTask(MiniWorldEnv):
 
         if self.place_box:
             self.box = self.place_entity(
-                Box(color='red'), pos=self.box_pos, dir=0
+                Box(color='red', size=self.box_size), pos=self.box_pos, dir=0
             )
 
         # self.box = self.place_entity(Box(color='red'))
