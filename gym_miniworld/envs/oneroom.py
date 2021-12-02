@@ -49,7 +49,7 @@ class OneRoomNoTask(MiniWorldEnv):
     placed randomly in one big room.
     """
 
-    def __init__(self, size=10, max_episode_steps=180, simple_env=False, place_box=False, randomize_start_pos=True, box_size=0.8, **kwargs):
+    def __init__(self, size=10, max_episode_steps=180, simple_env=False, place_box=False, randomize_start_pos=True, box_size=0.8, **env_kwargs):
         assert size % 2 == 0
 
         self.size = size
@@ -81,7 +81,7 @@ class OneRoomNoTask(MiniWorldEnv):
 
         super().__init__(
             max_episode_steps=max_episode_steps,
-            **kwargs
+            **env_kwargs
         )
 
         # Allow only movement actions (left/right/forward)
@@ -144,14 +144,29 @@ class OneRoomS6NoTask(OneRoomNoTask):
         params.set('forward_step', forward_step)
         params.set('turn_step', turn_step)
 
+        _config = {
+            'size': 6,
+            'max_episode_steps': 200,
+            'simple_env': False, 
+            'place_box': False, 
+            'randomize_start_pos': True, 
+            'box_size': 0.8, 
+        }
+
+        _config.update(env_kwargs or {})
+
         super().__init__(
-            size=env_kwargs['size'],
-            max_episode_steps=env_kwargs['max_episode_steps'],
+            size=_config['size'],
+            max_episode_steps=_config['max_episode_steps'],
             domain_rand=False,
             params=params,
-            obs_width=60, 
+            obs_width=80, 
             obs_height=80,
-            env_kwargs=env_kwargs,
+            simple_env=_config['simple_env'], 
+            place_box=_config['place_box'], 
+            randomize_start_pos=_config['randomize_start_pos'], 
+            box_size=_config['box_size'],
+            env_kwargs=_config,
         )
 
 # class OneRoomS6NoTaskHighRes(OneRoomNoTask):
