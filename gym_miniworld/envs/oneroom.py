@@ -152,8 +152,10 @@ class OneRoomS6NoTask(OneRoomNoTask):
             'randomize_start_pos': True, 
             'box_size': 0.8, 
         }
-
+        
         _config.update(env_kwargs or {})
+
+        print(f'!!! updated env_kwargs: {_config}')
 
         super().__init__(
             size=_config['size'],
