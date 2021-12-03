@@ -49,7 +49,7 @@ class OneRoomNoTask(MiniWorldEnv):
     placed randomly in one big room.
     """
 
-    def __init__(self, size=10, max_episode_steps=180, simple_env=False, place_box=False, randomize_start_pos=True, box_size=0.8, **env_kwargs):
+    def __init__(self, size=10, max_episode_steps=180, simple_env=False, place_box=False, randomize_start_pos=True, box_size=0.8, **kwargs):
         assert size % 2 == 0
 
         self.size = size
@@ -81,7 +81,7 @@ class OneRoomNoTask(MiniWorldEnv):
 
         super().__init__(
             max_episode_steps=max_episode_steps,
-            **env_kwargs
+            **kwargs
         )
 
         # Allow only movement actions (left/right/forward)
@@ -168,7 +168,7 @@ class OneRoomS6NoTask(OneRoomNoTask):
             place_box=_config['place_box'], 
             randomize_start_pos=_config['randomize_start_pos'], 
             box_size=_config['box_size'],
-            env_kwargs=_config,
+            kwargs=_config,
         )
 
 # class OneRoomS6NoTaskHighRes(OneRoomNoTask):
