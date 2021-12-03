@@ -135,7 +135,9 @@ class FrameBuffer:
         self.multi_fbo = GLuint(0)
         glGenFramebuffers(1, byref(self.multi_fbo))
         glBindFramebuffer(GL_FRAMEBUFFER, self.multi_fbo)
+        
 
+        num_samples = 1
         # The try block here is because some OpenGL drivers
         # (Intel GPU drivers on MacBooks in particular) do not
         # support multisampling on frame buffer objects
