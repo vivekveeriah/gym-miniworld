@@ -160,7 +160,7 @@ class OneRoomS6NoTask(OneRoomNoTask):
         _config.update(env_kwargs or {})
 
         print(f'!!! updated env_kwargs: {_config}')
-        
+
         super().__init__(
             size=_config['size'],
             max_episode_steps=_config['max_episode_steps'],
@@ -172,7 +172,7 @@ class OneRoomS6NoTask(OneRoomNoTask):
             place_box=_config['place_box'], 
             randomize_start_pos=_config['randomize_start_pos'], 
             box_size=_config['box_size'],
-            kwargs=_config,
+            **_config,
         )
 
 # class OneRoomS6NoTaskHighRes(OneRoomNoTask):
