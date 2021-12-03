@@ -162,16 +162,16 @@ class OneRoomS6NoTask(OneRoomNoTask):
         print(f'!!! updated env_kwargs: {_config}')
 
         super().__init__(
-            size=_config['size'],
-            max_episode_steps=_config['max_episode_steps'],
+            # size=_config['size'],
+            # max_episode_steps=_config['max_episode_steps'],
             # domain_rand=False,
             # params=params,
             # obs_width=80, 
             # obs_height=80,
-            simple_env=_config['simple_env'], 
-            place_box=_config['place_box'], 
-            randomize_start_pos=_config['randomize_start_pos'], 
-            box_size=_config['box_size'],
+            # simple_env=_config['simple_env'], 
+            # place_box=_config['place_box'], 
+            # randomize_start_pos=_config['randomize_start_pos'], 
+            # box_size=_config['box_size'],
             **_config,
         )
 
