@@ -78,7 +78,6 @@ class OneRoomNoTask(MiniWorldEnv):
                 [self.size // 2 + 1, 0, self.size // 2 + 1]
             )
 
-
         super().__init__(
             max_episode_steps=max_episode_steps,
             **kwargs
@@ -151,19 +150,24 @@ class OneRoomS6NoTask(OneRoomNoTask):
             'place_box': False, 
             'randomize_start_pos': True, 
             'box_size': 0.8, 
+
+            'domain_rand': False,
+            'params': params,
+            'obs_width': 80,
+            'obs_height': 80, 
         }
         
         _config.update(env_kwargs or {})
 
         print(f'!!! updated env_kwargs: {_config}')
-
+        
         super().__init__(
             size=_config['size'],
             max_episode_steps=_config['max_episode_steps'],
-            domain_rand=False,
-            params=params,
-            obs_width=80, 
-            obs_height=80,
+            # domain_rand=False,
+            # params=params,
+            # obs_width=80, 
+            # obs_height=80,
             simple_env=_config['simple_env'], 
             place_box=_config['place_box'], 
             randomize_start_pos=_config['randomize_start_pos'], 
