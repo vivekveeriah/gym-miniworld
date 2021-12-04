@@ -75,10 +75,12 @@ class TwoRoomsS6NoTask(MiniWorldEnv):
         }
         _config.update(env_kwargs or {})
 
-        self.possible_start_pos_x_room_1 = [-3.5, -3.0, -2.5, -2.0, -1.5, -1.0]
+        # self.possible_start_pos_x_room_1 = [-3.5, -3.0, -2.5, -2.0, -1.5, -1.0]
+        self.possible_start_pos_x_room_1 = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]
         self.possible_start_pos_z_room_1 = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5]
 
-        self.possible_start_pos_x_room_2 = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
+        # self.possible_start_pos_x_room_2 = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
+        self.possible_start_pos_x_room_2 = [5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0, 12.5, 13.0, 13.5, 14.0, 14.5]
         self.possible_start_pos_z_room_2 = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
 
         self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
@@ -93,12 +95,14 @@ class TwoRoomsS6NoTask(MiniWorldEnv):
     def _gen_world(self):
         # Top-left room
         room0 = self.add_rect_room(
-            min_x=-4, max_x=-0.5,
+            # min_x=-4, max_x=-0.5,
+            min_x=0, max_x=4,
             min_z=1 , max_z=7
         )
         # Top-right room
         room1 = self.add_rect_room(
-            min_x=0, max_x=10,
+            # min_x=0, max_x=10,
+            min_x=4.5, max_x=15,
             min_z=1, max_z=10
         )
 
