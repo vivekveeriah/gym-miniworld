@@ -72,6 +72,8 @@ class TwoRoomsS6NoTask(MiniWorldEnv):
             'params': params,
             'obs_width': 80,
             'obs_height': 80, 
+
+            'randomize_start_pos': True,
         }
         _config.update(env_kwargs or {})
 
@@ -84,6 +86,11 @@ class TwoRoomsS6NoTask(MiniWorldEnv):
         self.possible_start_pos_z_room_2 = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
 
         self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
+
+        self.randomize_start_pos = _config['randomize_start_pos']
+        self.agent_pos = np.array(
+            [5.0, 0.0, 5.0]
+        )
 
         super().__init__(
             **_config,
@@ -108,19 +115,24 @@ class TwoRoomsS6NoTask(MiniWorldEnv):
 
         # Add openings to connect the rooms together
         self.connect_rooms(room0, room1, min_z=1.5, max_z=3, max_y=1.74)
+        
+        if self.randomize_start_pos:
+            starting_room = np.random.choice(2)
+            if starting_room == 0:
+                start_x = np.random.choice(self.possible_start_pos_x_room_1)
+                start_z = np.random.choice(self.possible_start_pos_z_room_1)
+            elif starting_room == 1:
+                start_x = np.random.choice(self.possible_start_pos_x_room_2)
+                start_z = np.random.choice(self.possible_start_pos_z_room_2)
 
-        starting_room = np.random.choice(2)
-        if starting_room == 0:
-            start_x = np.random.choice(self.possible_start_pos_x_room_1)
-            start_z = np.random.choice(self.possible_start_pos_z_room_1)
-        elif starting_room == 1:
-            start_x = np.random.choice(self.possible_start_pos_x_room_2)
-            start_z = np.random.choice(self.possible_start_pos_z_room_2)
+            start_dir = np.random.choice(self.possible_dir_radians)
+            start_pos = np.array(
+                [start_x, 0., start_z]
+            )
+        else:
+            start_pos = self.agent_pos
+            start_dir = 0
 
-        start_dir = np.random.choice(self.possible_dir_radians)
-        start_pos = np.array(
-            [start_x, 0., start_z]
-        )
         self.place_agent(
             dir=start_dir, pos=start_pos
         )
