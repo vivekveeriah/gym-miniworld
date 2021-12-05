@@ -92,6 +92,8 @@ class TwoRoomsS6NoTask(MiniWorldEnv):
             [5.0, 0.0, 5.0]
         )
 
+        _config.pop('randomize_start_pos', None)
+
         super().__init__(
             **_config,
         )
