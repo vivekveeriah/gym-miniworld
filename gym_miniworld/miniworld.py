@@ -333,8 +333,8 @@ class Room:
         
 
             texcs = gen_texcs_wall(
-                # self.wall_tex,
-                _wall_tex,
+                self.wall_tex,
+                # _wall_tex,
                 seg_start,
                 min_y,
                 seg_end - seg_start,
