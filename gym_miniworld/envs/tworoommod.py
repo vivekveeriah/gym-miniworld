@@ -88,6 +88,15 @@ class TwoRoomMod(MiniWorldEnv):
             dir = -math.pi
         )
 
+        self.place_entity(
+            MeshEnt(
+                mesh_name='building',
+                height=35
+            ),
+            pos = np.array([-30, 0, -30]),
+            dir = math.pi / 2
+        )
+
         if self.randomize_start_pos:
             starting_room = np.random.choice(2)
             if starting_room == 0:
