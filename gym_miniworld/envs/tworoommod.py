@@ -10,15 +10,42 @@ class TwoRoomMod(MiniWorldEnv):
     Outside environment with two rooms connected by a gap in a wall
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, env_kwargs=None):
         # Parameters for larger movement steps, fast stepping
         params = DEFAULT_PARAMS.no_random()
         params.set('forward_step', 0.5)
         params.set('turn_step', 30)
 
+        _config = {
+            'max_episode_steps': 500, 
+            'obs_width': 80, 
+            'obs_height': 80, 
+
+            'randomize_start_pos': True, 
+        }
+        _config.update(env_kwargs or {})
+
+        self.possible_start_pos_x_room_1 = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+        self.possible_start_pos_z_room_1 = [1.0, 1.5, 2.0, 2.5]
+
+        self.possible_start_pos_x_room_2 = [
+            -6.5, -6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0, -0.5,
+            0., 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5]
+        self.possible_start_pos_z_room_2 = [-7.5, -7.0, -6.5, -6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0]
+
+        self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
+
+        self.randomize_start_pos = _config['randomize_start_pos']
+        self.agent_pos = np.array(
+            [0.0, 0.0, -4.0]
+        )
+
+        _config.pop('randomize_start_pos', None)
+
         super().__init__(
-            max_episode_steps=300,
-            **kwargs
+            **_config,
+            # max_episode_steps=300,
+            # **kwargs
         )
 
         # Allow only the movement actions
@@ -32,7 +59,8 @@ class TwoRoomMod(MiniWorldEnv):
             min_z=0.5 , max_z=3,
             # wall_tex='brick_wall',
             wall_tex='door_doom',
-            floor_tex='asphalt',
+            # floor_tex='asphalt',
+            floor_tex='floor_tiles_white',
             no_ceiling=True
         )
         # Bottom
@@ -40,13 +68,14 @@ class TwoRoomMod(MiniWorldEnv):
             min_x=-7, max_x=7,
             min_z=-8, max_z=-0.5,
             wall_tex='brick_wall',
-            floor_tex='asphalt',
+            # floor_tex='asphalt',
+            floor_tex='floor_tiles_white',
             no_ceiling=True
         )
         # self.connect_rooms(room0, room1, min_x=-1.5, max_x=1.5)
         self.connect_rooms(room0, room1, min_x=1.5, max_x=3.)
 
-        self.box = self.place_entity(Box(color='red'), room=room1)
+        # self.box = self.place_entity(Box(color='red'), room=room1)
 
         # Decorative building in the background
         self.place_entity(
@@ -65,8 +94,8 @@ class TwoRoomMod(MiniWorldEnv):
         if action == 2:
             obs, reward, done, info = super().step(action)
 
-        if self.near(self.box):
-            reward += self._reward()
-            done = True
+        # if self.near(self.box):
+        #     reward += self._reward()
+        #     done = True
 
         return obs, reward, done, info
