@@ -87,7 +87,24 @@ class TwoRoomMod(MiniWorldEnv):
             dir = -math.pi
         )
 
-        self.place_agent(room=room0)
+        if self.randomize_start_pos:
+            starting_room = np.random.choice(2)
+            if starting_room == 0:
+                start_x = np.random.choice(self.possible_start_pos_x_room_1)
+                start_z = np.random.choice(self.possible_start_pos_z_room_1)
+            elif starting_room == 1:
+                start_x = np.random.choice(self.possible_start_pos_x_room_2)
+                start_z = np.random.choice(self.possible_start_pos_z_room_2)
+
+            start_dir = np.random.choice(self.possible_dir_radians)
+            start_pos = np.array(
+                [start_x, 0., start_z]
+            )
+        else:
+            start_pos = self.agent_pos
+            start_dir = 0
+
+        self.place_agent(room=room0, dir=start_dir, pos=start_pos)
 
     def step(self, action):
         obs, reward, done, info = super().step(action)
