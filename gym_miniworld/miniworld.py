@@ -129,6 +129,7 @@ class Room:
         self.no_ceiling = no_ceiling
 
         # Texture names
+        # self.custom_wall_tex_name = "custom_brick_wall_{}"
         self.wall_tex_name = wall_tex
         self.floor_tex_name = floor_tex
         self.ceil_tex_name = ceil_tex
@@ -244,6 +245,14 @@ class Room:
 
         # Load the textures and do texture randomization
         self.wall_tex = Texture.get(self.wall_tex_name, rng)
+
+        # self.wall_tex_list = []
+        # for idx in range(4):
+        #     self.wall_tex_list.append(
+        #         Texture.get(self.custom_wall_tex_name.format(idx+1), rng)
+        #     )
+
+
         self.floor_tex = Texture.get(self.floor_tex_name, rng)
         self.ceil_tex = Texture.get(self.ceil_tex_name, rng)
 
@@ -273,7 +282,8 @@ class Room:
             seg_start,
             seg_end,
             min_y,
-            max_y
+            max_y, 
+            idx=None,
         ):
             if seg_end == seg_start:
                 return
@@ -309,20 +319,30 @@ class Room:
 
             # Generate the texture coordinates
 
-            # print(f'!!! self.wall_tex: {self.wall_tex}')
+            # if idx is not None:
+            #     _wall_tex = self.wall_tex_list[idx]
+            # else:
+            #     _wall_tex = self.wall_tex
+
+            # print(f'!!! idx: {idx}')
+            # print(f'!!! _wall_tex: {_wall_tex}')
             # print(f'!!! seg_start: {seg_start}')
             # print(f'!!! min_y: {min_y}')
             # print(f'!!! seg_end - seg_start: {seg_end - seg_start}')
             # print(f'!!! max_y - min_y: {max_y - min_y}')
+        
 
             texcs = gen_texcs_wall(
-                self.wall_tex,
+                # self.wall_tex,
+                _wall_tex,
                 seg_start,
                 min_y,
                 seg_end - seg_start,
                 max_y - min_y
             )
             self.wall_texcs.append(texcs)
+
+        # print(f'!!! num_walls: {self.num_walls}')
 
         # For each wall
         for wall_idx in range(self.num_walls):
@@ -343,7 +363,8 @@ class Room:
                 0,
                 seg_end,
                 0,
-                self.wall_height
+                self.wall_height, 
+                # idx=wall_idx,
             )
 
             # For each portal in this wall
@@ -430,7 +451,11 @@ class Room:
             glEnd()
 
         # Draw the walls
+        
         self.wall_tex.bind()
+        # for idx in range(len(self.wall_tex_list)):
+        #     self.wall_tex_list[idx].bind()
+
         glBegin(GL_QUADS)
         for i in range(self.wall_verts.shape[0]):
             glNormal3f(*self.wall_norms[i, :])

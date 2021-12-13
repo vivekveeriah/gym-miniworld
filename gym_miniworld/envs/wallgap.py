@@ -3,6 +3,7 @@ import math
 from gym import spaces
 from ..miniworld import MiniWorldEnv, Room
 from ..entity import Box, ImageFrame, MeshEnt
+from ..params import DEFAULT_PARAMS
 
 class WallGap(MiniWorldEnv):
     """
@@ -10,6 +11,11 @@ class WallGap(MiniWorldEnv):
     """
 
     def __init__(self, **kwargs):
+        # Parameters for larger movement steps, fast stepping
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', 0.5)
+        params.set('turn_step', 30)
+
         super().__init__(
             max_episode_steps=300,
             **kwargs
@@ -21,9 +27,11 @@ class WallGap(MiniWorldEnv):
     def _gen_world(self):
         # Top
         room0 = self.add_rect_room(
-            min_x=-7, max_x=7,
-            min_z=0.5 , max_z=8,
-            wall_tex='brick_wall',
+            # min_x=-7, max_x=7,
+            min_x=0., max_x=7,
+            min_z=0.5 , max_z=4,
+            # wall_tex='brick_wall',
+            wall_tex='door_doom',
             floor_tex='asphalt',
             no_ceiling=True
         )
@@ -35,7 +43,8 @@ class WallGap(MiniWorldEnv):
             floor_tex='asphalt',
             no_ceiling=True
         )
-        self.connect_rooms(room0, room1, min_x=-1.5, max_x=1.5)
+        # self.connect_rooms(room0, room1, min_x=-1.5, max_x=1.5)
+        self.connect_rooms(room0, room1, min_x=1.5, max_x=3.)
 
         self.box = self.place_entity(Box(color='red'), room=room1)
 
@@ -53,6 +62,9 @@ class WallGap(MiniWorldEnv):
 
     def step(self, action):
         obs, reward, done, info = super().step(action)
+        if action == 2:
+            obs, reward, done, info = super().step(action)
+            obs, reward, done, info = super().step(action)
 
         if self.near(self.box):
             reward += self._reward()

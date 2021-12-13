@@ -2,6 +2,7 @@ import numpy as np
 import math
 from ..miniworld import MiniWorldEnv, Room
 from ..entity import Box
+from ..params import DEFAULT_PARAMS
 from gym import spaces
 
 class Hallway(MiniWorldEnv):
@@ -11,6 +12,11 @@ class Hallway(MiniWorldEnv):
     """
 
     def __init__(self, length=12, **kwargs):
+
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', 0.5)
+        params.set('turn_step', 30)
+
         assert length >= 2
         self.length = length
 

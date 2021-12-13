@@ -44,15 +44,21 @@ class Texture:
         """
 
         paths = self.tex_paths.get(tex_name, [])
+        # print(f'!!! tex_name: {tex_name}, paths: {paths}')
 
-        # Get an inventory of the existing texture files
-        if len(paths) == 0:
-            for i in range(1, 10):
-                path = get_file_path('textures', '%s_%d' % (tex_name, i), 'png')
+        if tex_name[-1].isdigit():
+            path = get_file_path('textures', '%s' % (tex_name), 'png')
+            paths.append(path)
 
-                if not os.path.exists(path):
-                    break
-                paths.append(path)
+        else:
+            # Get an inventory of the existing texture files
+            if len(paths) == 0:
+                for i in range(1, 10):
+                    path = get_file_path('textures', '%s_%d' % (tex_name, i), 'png')
+
+                    if not os.path.exists(path):
+                        break
+                    paths.append(path)
 
         assert len(paths) > 0, 'failed to load textures for name "%s"' % tex_name
 
