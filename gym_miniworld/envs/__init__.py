@@ -11,6 +11,7 @@ from .ymaze import *
 from .maze import *
 from .fourrooms import *
 from .tworooms import *
+from .tworoommod import *
 from .threerooms import *
 from .wallgap import *
 from .sidewalk import *
