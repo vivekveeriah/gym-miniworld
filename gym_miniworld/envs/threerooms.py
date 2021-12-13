@@ -3,6 +3,7 @@ import math
 from gym import spaces
 from ..miniworld import MiniWorldEnv, Room
 from ..entity import ImageFrame, MeshEnt, Box, Key, Ball, COLOR_NAMES
+from ..params import DEFAULT_PARAMS
 
 class ThreeRooms(MiniWorldEnv):
     """
@@ -10,6 +11,11 @@ class ThreeRooms(MiniWorldEnv):
     """
 
     def __init__(self, **kwargs):
+        # Parameters for larger movement steps, fast stepping
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', 0.5)
+        params.set('turn_step', 30)
+
         super().__init__(
             max_episode_steps=400,
             **kwargs
