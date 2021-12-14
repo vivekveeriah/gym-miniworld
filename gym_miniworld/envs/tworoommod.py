@@ -70,7 +70,8 @@ class TwoRoomMod(MiniWorldEnv):
         room1 = self.add_rect_room(
             # min_x=-7, max_x=7,
             min_x=0, max_x=7,
-            min_z=-8, max_z=-0.5,
+            # min_z=-8, max_z=-0.5,
+            min_z=-6, max_z=-0.5,
             wall_tex='brick_wall',
             # floor_tex='asphalt',
             floor_tex='floor_tiles_white',
