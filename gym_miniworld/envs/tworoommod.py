@@ -28,9 +28,11 @@ class TwoRoomMod(MiniWorldEnv):
         self.possible_start_pos_x_room_1 = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
         self.possible_start_pos_z_room_1 = [1.0, 1.5, 2.0, 2.5]
 
+        # self.possible_start_pos_x_room_2 = [
+        #     -6.5, -6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0, -0.5,
+        #     0., 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5]
         self.possible_start_pos_x_room_2 = [
-            -6.5, -6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0, -0.5,
-            0., 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5]
+            0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5]
         self.possible_start_pos_z_room_2 = [
             -7.5, -7.0, -6.5, -6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0]
 
@@ -66,7 +68,8 @@ class TwoRoomMod(MiniWorldEnv):
         )
         # Bottom
         room1 = self.add_rect_room(
-            min_x=-7, max_x=7,
+            # min_x=-7, max_x=7,
+            min_x=0, max_x=7,
             min_z=-8, max_z=-0.5,
             wall_tex='brick_wall',
             # floor_tex='asphalt',
