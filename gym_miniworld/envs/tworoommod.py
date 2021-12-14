@@ -69,7 +69,7 @@ class TwoRoomMod(MiniWorldEnv):
         # Bottom
         room1 = self.add_rect_room(
             # min_x=-7, max_x=7,
-            min_x=0, max_x=7,
+            min_x=1, max_x=7,
             # min_z=-8, max_z=-0.5,
             min_z=-6, max_z=-0.5,
             wall_tex='brick_wall',
@@ -78,7 +78,8 @@ class TwoRoomMod(MiniWorldEnv):
             no_ceiling=True
         )
         # self.connect_rooms(room0, room1, min_x=-1.5, max_x=1.5)
-        self.connect_rooms(room0, room1, min_x=1.5, max_x=3.)
+        # self.connect_rooms(room0, room1, min_x=1.5, max_x=3.)
+        self.connect_rooms(room0, room1, min_x=1.0, max_x=2.5)
 
         # self.box = self.place_entity(Box(color='red'), room=room1)
 
