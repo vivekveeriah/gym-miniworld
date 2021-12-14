@@ -13,7 +13,8 @@ class TwoRoomMod(MiniWorldEnv):
     def __init__(self, env_kwargs=None):
         # Parameters for larger movement steps, fast stepping
         params = DEFAULT_PARAMS.no_random()
-        params.set('forward_step', 0.5)
+        # params.set('forward_step', 0.5)
+        params.set('forward_step', 0.7)
         params.set('turn_step', 30)
 
         _config = {
