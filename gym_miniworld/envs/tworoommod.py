@@ -44,7 +44,7 @@ class TwoRoomMod(MiniWorldEnv):
 
         self.randomize_start_pos = _config['randomize_start_pos']
         self.agent_pos = np.array(
-            [0.0, 0.0, -4.0]
+            [4.0, 0.0, -3.0]
         )
 
         _config.pop('randomize_start_pos', None)
