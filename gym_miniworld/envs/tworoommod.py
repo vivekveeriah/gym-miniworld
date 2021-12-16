@@ -64,8 +64,8 @@ class TwoRoomMod(MiniWorldEnv):
             # min_x=-7, max_x=7,
             min_x=1., max_x=6,
             min_z=0.5 , max_z=3,
-            # wall_tex='brick_wall',
-            wall_tex='door_doom',
+            wall_tex='brick_wall',
+            # wall_tex='door_doom',
             # floor_tex='asphalt',
             floor_tex='floor_tiles_white',
             no_ceiling=True
