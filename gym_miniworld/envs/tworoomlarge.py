@@ -79,7 +79,7 @@ class TwoRoomLarge(MiniWorldEnv):
             min_x=0, max_x=10,
             # min_z=-8, max_z=-0.5,
             # min_z=-6, max_z=-0.5,
-            min_z=-5.5, max_z=-0.5,
+            min_z=-6, max_z=-1,
             wall_tex='brick_wall',
             # floor_tex='asphalt',
             floor_tex='floor_tiles_white',
@@ -88,7 +88,7 @@ class TwoRoomLarge(MiniWorldEnv):
         # self.connect_rooms(room0, room1, min_x=-1.5, max_x=1.5)
         # self.connect_rooms(room0, room1, min_x=1.5, max_x=3.)
         # self.connect_rooms(room0, room1, min_x=1.0, max_x=2.5)
-        self.connect_rooms(room0, room1, min_x=2.25, max_x=3.75)
+        self.connect_rooms(room0, room1, min_x=2, max_x=3.5)
 
         # self.box = self.place_entity(Box(color='red'), room=room1)
 
