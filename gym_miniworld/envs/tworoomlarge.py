@@ -27,24 +27,19 @@ class TwoRoomLarge(MiniWorldEnv):
         }
         _config.update(env_kwargs or {})
 
-        self.possible_start_pos_x_room_1 = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
-        self.possible_start_pos_z_room_1 = [1.0, 1.5, 2.0, 2.5]
+        self.possible_start_pos_x_room_1 = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]
+        self.possible_start_pos_z_room_1 = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]
 
-        # self.possible_start_pos_x_room_2 = [
-        #     -6.5, -6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0, -0.5,
-        #     0., 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5]
         self.possible_start_pos_x_room_2 = [
-            1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5]
-        # self.possible_start_pos_z_room_2 = [
-        #     -7.5, -7.0, -6.5, -6.0, -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0]
+            0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
         self.possible_start_pos_z_room_2 = [
-            -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5, -1.0]
+            -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5]
 
         self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
 
         self.randomize_start_pos = _config['randomize_start_pos']
         self.agent_pos = np.array(
-            [4.0, 0.0, -3.0]
+            [5, 0.0, -3.0]
         )
 
         _config.pop('randomize_start_pos', None)
@@ -61,11 +56,8 @@ class TwoRoomLarge(MiniWorldEnv):
     def _gen_world(self):
         # Top
         room0 = self.add_rect_room(
-            # min_x=-7, max_x=7,
-            # min_x=1., max_x=6,
             min_x=0, max_x=5,
             min_z=0, max_z=5,
-            # min_z=0.5 , max_z=3,
             wall_tex='brick_wall',
             # wall_tex='door_doom',
             # floor_tex='asphalt',
@@ -74,23 +66,14 @@ class TwoRoomLarge(MiniWorldEnv):
         )
         # Bottom
         room1 = self.add_rect_room(
-            # min_x=-7, max_x=7,
-            # min_x=1, max_x=7,
             min_x=0, max_x=10,
-            # min_z=-8, max_z=-0.5,
-            # min_z=-6, max_z=-0.5,
             min_z=-6, max_z=-1,
             wall_tex='brick_wall',
             # floor_tex='asphalt',
             floor_tex='floor_tiles_white',
             no_ceiling=True
         )
-        # self.connect_rooms(room0, room1, min_x=-1.5, max_x=1.5)
-        # self.connect_rooms(room0, room1, min_x=1.5, max_x=3.)
-        # self.connect_rooms(room0, room1, min_x=1.0, max_x=2.5)
         self.connect_rooms(room0, room1, min_x=2, max_x=3.5)
-
-        # self.box = self.place_entity(Box(color='red'), room=room1)
 
         # Decorative building in the background
         self.place_entity(
