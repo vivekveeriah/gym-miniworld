@@ -13,6 +13,7 @@ from .fourrooms import *
 from .tworooms import *
 from .tworoommod import *
 from .tworoomsmall import *
+from .tworoomsmallidenticalcolor import *
 from .tworoomlarge import *
 from .tworoomlargeidenticalcolor import *
 from .threerooms import *
