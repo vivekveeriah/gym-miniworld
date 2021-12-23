@@ -12,6 +12,7 @@ from .maze import *
 from .fourrooms import *
 from .tworooms import *
 from .tworoommod import *
+from .tworoomsmall import *
 from .tworoomlarge import *
 from .threerooms import *
 from .wallgap import *
