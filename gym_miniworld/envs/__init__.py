@@ -14,6 +14,7 @@ from .tworooms import *
 from .tworoommod import *
 from .tworoomsmall import *
 from .tworoomlarge import *
+from .tworoomlargeidenticalcolor import *
 from .threerooms import *
 from .wallgap import *
 from .sidewalk import *
