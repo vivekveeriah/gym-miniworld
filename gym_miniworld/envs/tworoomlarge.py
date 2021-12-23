@@ -33,6 +33,7 @@ class TwoRoomLarge(MiniWorldEnv):
         self.possible_start_pos_x_room_2 = [
             0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5]
         self.possible_start_pos_z_room_2 = [
+            -7.5, -7.0, -6.5, -6.0,
             -5.5, -5.0, -4.5, -4.0, -3.5, -3.0, -2.5, -2.0, -1.5]
 
         self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
@@ -58,8 +59,8 @@ class TwoRoomLarge(MiniWorldEnv):
         room0 = self.add_rect_room(
             min_x=0, max_x=5,
             min_z=0, max_z=5,
-            wall_tex='brick_wall',
-            # wall_tex='door_doom',
+            # wall_tex='brick_wall',
+            wall_tex='door_doom',
             # floor_tex='asphalt',
             floor_tex='floor_tiles_white',
             no_ceiling=True
@@ -67,7 +68,8 @@ class TwoRoomLarge(MiniWorldEnv):
         # Bottom
         room1 = self.add_rect_room(
             min_x=0, max_x=10,
-            min_z=-6, max_z=-1,
+            # min_z=-6, max_z=-1,
+            min_z=-8, max_z=-1,
             wall_tex='brick_wall',
             # floor_tex='asphalt',
             floor_tex='floor_tiles_white',
