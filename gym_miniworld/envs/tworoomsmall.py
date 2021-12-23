@@ -76,7 +76,7 @@ class TwoRoomSmall(MiniWorldEnv):
             # no_ceiling=True
             no_ceiling=False,
         )
-        self.connect_rooms(room0, room1, min_x=2, max_x=3.5)
+        self.connect_rooms(room0, room1, min_x=0.5, max_x=3)
 
         # Decorative building in the background
         # self.place_entity(
