@@ -63,7 +63,8 @@ class TwoRoomLarge(MiniWorldEnv):
             wall_tex='door_doom',
             # floor_tex='asphalt',
             floor_tex='floor_tiles_white',
-            no_ceiling=True
+            # no_ceiling=True,
+            no_ceiling=False
         )
         # Bottom
         room1 = self.add_rect_room(
@@ -73,28 +74,29 @@ class TwoRoomLarge(MiniWorldEnv):
             wall_tex='brick_wall',
             # floor_tex='asphalt',
             floor_tex='floor_tiles_white',
-            no_ceiling=True
+            # no_ceiling=True
+            no_ceiling=False,
         )
         self.connect_rooms(room0, room1, min_x=2, max_x=3.5)
 
         # Decorative building in the background
-        self.place_entity(
-            MeshEnt(
-                mesh_name='building',
-                height=30
-            ),
-            pos = np.array([30, 0, 30]),
-            dir = -math.pi
-        )
+        # self.place_entity(
+        #     MeshEnt(
+        #         mesh_name='building',
+        #         height=30
+        #     ),
+        #     pos = np.array([30, 0, 30]),
+        #     dir = -math.pi
+        # )
 
-        self.place_entity(
-            MeshEnt(
-                mesh_name='building',
-                height=35
-            ),
-            pos = np.array([-30, 0, -30]),
-            dir = math.pi / 2
-        )
+        # self.place_entity(
+        #     MeshEnt(
+        #         mesh_name='building',
+        #         height=35
+        #     ),
+        #     pos = np.array([-30, 0, -30]),
+        #     dir = math.pi / 2
+        # )
 
         if self.randomize_start_pos:
             starting_room = np.random.choice(2)
