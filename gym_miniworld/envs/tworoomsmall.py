@@ -5,7 +5,7 @@ from ..miniworld import MiniWorldEnv, Room
 from ..entity import Box, ImageFrame, MeshEnt
 from ..params import DEFAULT_PARAMS
 
-class TwoRoomLarge(MiniWorldEnv):
+class TwoRoomSmall(MiniWorldEnv):
     """
     Outside environment with two rooms connected by a gap in a wall
     """
