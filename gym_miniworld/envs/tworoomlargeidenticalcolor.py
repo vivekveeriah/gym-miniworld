@@ -41,7 +41,7 @@ class TwoRoomLargeIdenticalColor(MiniWorldEnv):
 
         self.randomize_start_pos = _config['randomize_start_pos']
         self.agent_pos = np.array(
-            [5, 0.0, -3.0]
+            [5, 0.0, -6.0]
         )
 
         _config.pop('randomize_start_pos', None)
