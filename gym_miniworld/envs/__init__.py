@@ -16,6 +16,7 @@ from .tworoomsmall import *
 from .tworoomsmallidenticalcolor import *
 from .tworoomlarge import *
 from .tworoomlargeidenticalcolor import *
+from .tworoomlargeidenticalcolorbox import *
 from .threerooms import *
 from .wallgap import *
 from .sidewalk import *
