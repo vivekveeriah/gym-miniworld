@@ -44,7 +44,7 @@ class TwoRoomLargeIdenticalColorBox(MiniWorldEnv):
             [5, 0.0, -6.0]
         )
         self.box_pos = np.array(
-            [8, 0, -8]
+            [7, 0, -8]
         )
         self.box_size = 0.4
 
