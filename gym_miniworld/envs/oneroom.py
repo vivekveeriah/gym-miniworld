@@ -145,7 +145,8 @@ class OneRoomS6NoTask(OneRoomNoTask):
 
         _config = {
             'size': 6,
-            'max_episode_steps': 200,
+            # 'max_episode_steps': 200,
+            'max_episode_steps': 10_000,
             'simple_env': False, 
             'place_box': False, 
             'randomize_start_pos': True, 
