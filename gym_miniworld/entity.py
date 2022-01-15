@@ -402,7 +402,7 @@ class Box(Entity):
             y_min=0,
 
             # y_max=sy,
-            y_max=1.25,
+            y_max=1.4,
 
             z_min=-sz/2,
             z_max=+sz/2
