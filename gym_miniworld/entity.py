@@ -400,7 +400,10 @@ class Box(Entity):
             x_min=-sx/2,
             x_max=+sx/2,
             y_min=0,
-            y_max=sy,
+
+            # y_max=sy,
+            y_max=1.5,
+            
             z_min=-sz/2,
             z_max=+sz/2
         )
