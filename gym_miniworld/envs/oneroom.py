@@ -59,7 +59,7 @@ class OneRoomNoTask(MiniWorldEnv):
         self.box_size = box_size
 
         # Create variables that are going to be used later on
-        self.possible_start_pos = [0.5 * i for i in range(1, self.size * 2)]
+        # self.possible_start_pos = [0.5 * i for i in range(1, self.size * 2)]
 
         if self.simple_env:
             self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
@@ -73,10 +73,12 @@ class OneRoomNoTask(MiniWorldEnv):
             self.agent_pos = np.array(
                 [self.size // 2, 0, self.size // 2]
             )
+            self.possible_start_pos = [0.5 * i for i in range(1, self.size * 2)]
         else:
             self.agent_pos = np.array(
                 [self.size // 2 + 1, 0, self.size // 2 + 1]
             )
+            self.possible_start_pos = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5]
 
         super().__init__(
             max_episode_steps=max_episode_steps,
@@ -144,7 +146,7 @@ class OneRoomS6NoTask(OneRoomNoTask):
         params.set('turn_step', turn_step)
 
         _config = {
-            'size': 6,
+            'size': 8,
             # 'max_episode_steps': 200,
             'max_episode_steps': 10_000,
             'simple_env': False, 
