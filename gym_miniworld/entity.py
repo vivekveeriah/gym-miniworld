@@ -410,6 +410,60 @@ class Box(Entity):
 
         glPopMatrix()
 
+
+class RectangularBox(Entity):
+    """
+    Colored box object
+    """
+
+    def __init__(self, color, size=0.8):
+        super().__init__()
+
+        if type(size) is int or type(size) is float:
+            size = np.array([size, size, size])
+        size = np.array(size)
+        sx, sy, sz = size
+
+        self.color = color
+        self.size = size
+
+        self.radius = math.sqrt(sx*sx + sz*sz)/2
+        self.height = sy
+
+    def randomize(self, params, rng):
+        self.color_vec = COLORS[self.color] + params.sample(rng, 'obj_color_bias')
+        self.color_vec = np.clip(self.color_vec, 0, 1)
+
+    def render(self):
+        """
+        Draw the object
+        """
+
+        sx, sy, sz = self.size
+
+        glDisable(GL_TEXTURE_2D)
+        glColor3f(*self.color_vec)
+
+        glPushMatrix()
+        glTranslatef(*self.pos)
+        glRotatef(self.dir * (180/math.pi), 0, 1, 0)
+
+        drawBox(
+            # x_min=-sx/2,
+            # x_max=+sx/2,
+            x_min=-sx,
+            x_max=+sx/1.25,
+            y_min=0,
+
+            # y_max=sy,
+            y_max=1.4,
+
+            z_min=-sz/3,
+            z_max=+sz/3
+        )
+
+        glPopMatrix()
+
 class Key(MeshEnt):
     """
     Key the agent can pick up, carry, and use to open doors

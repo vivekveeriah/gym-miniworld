@@ -1,7 +1,7 @@
 import numpy as np
 import math
 from ..miniworld import MiniWorldEnv, Room
-from ..entity import Box
+from ..entity import Box, RectangularBox
 from ..params import DEFAULT_PARAMS
 from gym import spaces
 
@@ -151,6 +151,125 @@ class OneRoomS6NoTask(OneRoomNoTask):
             'max_episode_steps': 10_000,
             'simple_env': False, 
             'place_box': False, 
+            'randomize_start_pos': True, 
+            'box_size': 0.8, 
+
+            'domain_rand': False,
+            'params': params,
+            'obs_width': 80,
+            'obs_height': 80, 
+        }
+        _config.update(env_kwargs or {})
+
+        super().__init__(
+            **_config,
+        )
+
+class AsymmetricOneRoomNoTask(MiniWorldEnv):
+    """
+    Environment in which the goal is to go to a red box
+    placed randomly in one big room.
+    """
+
+    def __init__(self, size=8, max_episode_steps=180, simple_env=False, place_box=False, randomize_start_pos=True, box_size=0.8, **kwargs):
+        assert size % 2 == 0
+
+        self.size = size
+        self.simple_env = simple_env
+        self.place_box = place_box
+        self.randomize_start_pos = randomize_start_pos
+        self.box_size = box_size
+
+        # Create variables that are going to be used later on
+        # self.possible_start_pos = [0.5 * i for i in range(1, self.size * 2)]
+
+        self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 45)]
+
+        self.box_pos = np.array(
+            [5, 0, 3]
+        )        
+        # self.box_pos = np.array(
+        #     [self.size // 2, 0, self.size // 2]
+        # )
+        # if not self.place_box:
+        #     self.agent_pos = np.array(
+        #         [self.size // 2, 0, self.size // 2]
+        #     )
+        #     self.possible_start_pos = [0.5 * i for i in range(1, self.size * 2)]
+        # else:
+        self.agent_pos = np.array(
+            [5, 0, 5]
+        )
+        self.possible_start_pos_x = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 6.0, 6.5, 7.0, 7.5]
+        self.possible_start_pos_y = [0.5, 1.0, 1.5, 2.0, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5]
+
+        super().__init__(
+            max_episode_steps=max_episode_steps,
+            **kwargs
+        )
+
+        # Allow only movement actions (left/right/forward)
+        self.action_space = spaces.Discrete(self.actions.move_forward+1)
+        
+    def _gen_world(self):
+        room = self.add_rect_room(
+            min_x=0,
+            max_x=self.size,
+            min_z=0,
+            max_z=self.size
+        )
+
+        self.box = self.place_entity(
+            RectangularBox(color='red', size=self.box_size), pos=self.box_pos, dir=0
+        )
+
+        # self.box = self.place_entity(Box(color='red'))
+        if self.randomize_start_pos:
+            while True:
+                random_pos_x = np.random.choice(self.possible_start_pos_x)
+                random_pos_y = np.random.choice(self.possible_start_pos_y)
+                random_dir = np.random.choice(self.possible_dir_radians)
+
+                random_start_pos = np.array(
+                    [random_pos_x, 0., random_pos_y]
+                )
+
+                if self.place_box: 
+                    if not np.array_equal(random_start_pos, self.box_pos):
+                        break
+                else:
+                    break
+                
+        else:
+            random_start_pos = self.agent_pos
+            random_dir = 0
+
+        self.place_agent(
+            dir=random_dir, pos=random_start_pos
+        )
+
+    def step(self, action):
+        obs, reward, done, info = super().step(action)
+
+        if action == 2:  # if move forward, then move forward twice
+            obs, reward, done, info = super().step(action)
+
+        return obs, reward, done, info
+
+
+class AsymmetricOneRoomS6NoTask(AsymmetricOneRoomNoTask):
+    def __init__(self, turn_step=30, forward_step=0.5, env_kwargs=None):
+        # Parameters for larger movement steps, fast stepping
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', forward_step)
+        params.set('turn_step', turn_step)
+
+        _config = {
+            'size': 8,
+            # 'max_episode_steps': 200,
+            'max_episode_steps': 10_000,
+            'simple_env': False, 
+            'place_box': True, 
             'randomize_start_pos': True, 
             'box_size': 0.8, 
 
