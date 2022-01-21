@@ -61,10 +61,12 @@ class OneRoomNoTask(MiniWorldEnv):
         # Create variables that are going to be used later on
         # self.possible_start_pos = [0.5 * i for i in range(1, self.size * 2)]
 
-        if self.simple_env:
-            self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
-        else:
-            self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 45)]
+        # if self.simple_env:
+        #     self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
+        # else:
+        #     self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 45)]
+
+        self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
         
         self.box_pos = np.array(
             [self.size // 2, 0, self.size // 2]
@@ -256,7 +258,6 @@ class AsymmetricOneRoomNoTask(MiniWorldEnv):
 
         return obs, reward, done, info
 
-
 class AsymmetricOneRoomS6NoTask(AsymmetricOneRoomNoTask):
     def __init__(self, turn_step=30, forward_step=0.5, env_kwargs=None):
         # Parameters for larger movement steps, fast stepping
@@ -270,6 +271,107 @@ class AsymmetricOneRoomS6NoTask(AsymmetricOneRoomNoTask):
             'max_episode_steps': 10_000,
             'simple_env': False, 
             'place_box': True, 
+            'randomize_start_pos': True, 
+            'box_size': 0.8, 
+
+            'domain_rand': False,
+            'params': params,
+            'obs_width': 80,
+            'obs_height': 80, 
+        }
+        _config.update(env_kwargs or {})
+
+        super().__init__(
+            **_config,
+        )
+
+class OneRectangularRoomNoTask(MiniWorldEnv):
+    """
+    Environment in which the goal is to go to a red box
+    placed randomly in one big room.
+    """
+
+    def __init__(self, size_x=10, size_y=10, max_episode_steps=180, simple_env=False, place_box=False, randomize_start_pos=True, box_size=0.8, **kwargs):
+        assert size_x % 2 == 0
+        assert size_y % 2 == 0
+
+        self.size_x = size_x
+        self.size_y = size_y
+        self.simple_env = simple_env
+        self.randomize_start_pos = randomize_start_pos
+
+        # Create variables that are going to be used later on
+        # self.possible_start_pos = [0.5 * i for i in range(1, self.size * 2)]
+
+        # if self.simple_env:
+        #     self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
+        # else:
+        #     self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 45)]
+
+        self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
+        
+        self.agent_pos = np.array(
+            [self.size_x // 2, 0, self.size_y // 2]
+        )
+        self.possible_start_pos_x = [0.5 * i for i in range(1, self.size_x * 2)]
+        self.possible_start_pos_y = [0.5 * i for i in range(1, self.size_y * 2)]
+        
+        super().__init__(
+            max_episode_steps=max_episode_steps,
+            **kwargs
+        )
+
+        # Allow only movement actions (left/right/forward)
+        self.action_space = spaces.Discrete(self.actions.move_forward+1)
+        
+    def _gen_world(self):
+        room = self.add_rect_room(
+            min_x=0,
+            max_x=self.size_x,
+            min_z=0,
+            max_z=self.size_y,
+        )
+
+        # self.box = self.place_entity(Box(color='red'))
+        if self.randomize_start_pos:
+            random_pos_x = np.random.choice(self.possible_start_pos_x)
+            random_pos_y = np.random.choice(self.possible_start_pos_y)
+            random_dir = np.random.choice(self.possible_dir_radians)
+
+            random_start_pos = np.array(
+                [random_pos_x, 0., random_pos_y]
+            )
+                
+        else:
+            random_start_pos = self.agent_pos
+            random_dir = 0
+
+        self.place_agent(
+            dir=random_dir, pos=random_start_pos
+        )
+
+    def step(self, action):
+        obs, reward, done, info = super().step(action)
+
+        if action == 2:  # if move forward, then move forward twice
+            obs, reward, done, info = super().step(action)
+
+        return obs, reward, done, info
+
+class OneRectangularRoomS6NoTask(OneRectangularRoomNoTask):
+    def __init__(self, turn_step=30, forward_step=0.5, env_kwargs=None):
+        # Parameters for larger movement steps, fast stepping
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', forward_step)
+        params.set('turn_step', turn_step)
+
+        _config = {
+            'size_x': 8,
+            'size_y': 8,
+            # 'max_episode_steps': 200,
+            'max_episode_steps': 10_000,
+            'simple_env': False, 
+            'place_box': False, 
             'randomize_start_pos': True, 
             'box_size': 0.8, 
 
