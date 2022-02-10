@@ -386,6 +386,89 @@ class OneRectangularRoomS6NoTask(OneRectangularRoomNoTask):
             **_config,
         )
 
+
+class OneRoomFixedTask(MiniWorldEnv):
+    """
+    Environment in which the goal is to go to a red box
+    placed randomly in one big room.
+    """
+
+    def __init__(self, size=10, max_episode_steps=180, **kwargs):
+        assert size >= 2
+        self.size = size
+
+        super().__init__(
+            max_episode_steps=max_episode_steps,
+            **kwargs
+        )
+
+        # Allow only movement actions (left/right/forward)
+        self.action_space = spaces.Discrete(self.actions.move_forward+1)
+
+        self.box_size = 0.4
+        self.box_pos =  np.array(
+            [7, 0, 7]
+        )
+        self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
+
+    def _gen_world(self):
+        room = self.add_rect_room(
+            min_x=0,
+            max_x=self.size,
+            min_z=0,
+            max_z=self.size
+        )
+
+        self.box = self.place_entity(
+            Box(color='red', size=self.box_size), pos=self.box_pos, dir=0
+        )
+        random_dir = np.random.choice(self.possible_dir_radians)
+        random_start_pos = np.array(
+            [1, 0, 1]
+        )
+        self.place_agent(
+            dir=random_dir, pos=random_start_pos
+        )
+
+    def step(self, action):
+        obs, reward, done, info = super().step(action)
+
+        if self.near(self.box):
+            # reward += self._reward()
+            reward += 1.
+            done = True
+
+        return obs, reward, done, info
+
+
+class OneRoomFixedTaskS6(OneRoomFixedTask):
+    def __init__(self, turn_step=30, forward_step=0.5, env_kwargs=None):
+        # Parameters for larger movement steps, fast stepping
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', forward_step)
+        params.set('turn_step', turn_step)
+
+        _config = {
+            # 'size_x': 8,
+            # 'size_y': 8,
+            # # 'max_episode_steps': 200,
+            # 'max_episode_steps': 10_000,
+            # 'simple_env': False, 
+            # 'place_box': False, 
+            # 'randomize_start_pos': True, 
+            # 'box_size': 0.8, 
+
+            # 'domain_rand': False,
+            # 'params': params,
+            'obs_width': 80,
+            'obs_height': 80, 
+        }
+        _config.update(env_kwargs or {})
+
+        super().__init__(
+            **_config,
+        )
+
 # class OneRoomS6NoTaskHighRes(OneRoomNoTask):
 #     def __init__(self, max_episode_steps=200, turn_step=30, forward_step=0.5, size=6, **kwargs):
 #         # Parameters for larger movement steps, fast stepping
