@@ -397,7 +397,7 @@ class OneRoomFixedTask(MiniWorldEnv):
         assert size >= 2
         self.size = size
 
-        self.box_size = 0.4
+        self.box_size = 0.8
         self.box_pos =  np.array(
             [7, 0, 7]
         )
