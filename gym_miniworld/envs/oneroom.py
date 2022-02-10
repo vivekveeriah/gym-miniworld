@@ -393,13 +393,13 @@ class OneRoomFixedTask(MiniWorldEnv):
     placed randomly in one big room.
     """
 
-    def __init__(self, size=10, max_episode_steps=180, **kwargs):
+    def __init__(self, size=6, max_episode_steps=180, **kwargs):
         assert size >= 2
         self.size = size
 
         self.box_size = 0.8
         self.box_pos =  np.array(
-            [7, 0, 7]
+            [5., 0, 5.]
         )
         self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
 
@@ -424,7 +424,7 @@ class OneRoomFixedTask(MiniWorldEnv):
         )
         random_dir = np.random.choice(self.possible_dir_radians)
         random_start_pos = np.array(
-            [1, 0, 1]
+            [1., 0, 1.]
         )
         self.place_agent(
             dir=random_dir, pos=random_start_pos
