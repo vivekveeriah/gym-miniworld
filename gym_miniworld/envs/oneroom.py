@@ -397,6 +397,12 @@ class OneRoomFixedTask(MiniWorldEnv):
         assert size >= 2
         self.size = size
 
+        self.box_size = 0.4
+        self.box_pos =  np.array(
+            [7, 0, 7]
+        )
+        self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
+
         super().__init__(
             max_episode_steps=max_episode_steps,
             **kwargs
@@ -404,12 +410,6 @@ class OneRoomFixedTask(MiniWorldEnv):
 
         # Allow only movement actions (left/right/forward)
         self.action_space = spaces.Discrete(self.actions.move_forward+1)
-
-        self.box_size = 0.4
-        self.box_pos =  np.array(
-            [7, 0, 7]
-        )
-        self.possible_dir_radians = [i * math.pi / 180 for i in range(0, 370, 30)]
 
     def _gen_world(self):
         room = self.add_rect_room(
